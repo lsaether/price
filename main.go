@@ -1,6 +1,8 @@
 package main
 
 // TODO: allow for input of just the Ticker symbol.
+// TODO: make "convert" command line utility to conver this bitcoin price
+// to other currencies like so, `price eth | convert usd`
 
 import (
 	"bytes";

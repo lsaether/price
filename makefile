@@ -1,4 +1,5 @@
 clean:
+	touch price
 	rm ./price
 build:
 	make clean

@@ -1,9 +1,12 @@
 package main
 
 import (
-	"os";
+	// "encoding/json";
 	"flag";
 	"fmt";
+	"io";
+	"net/http";
+	"os";
 	"strings"
 )
 
@@ -32,6 +35,18 @@ func main() {
 			break
 		}
 	}
+
+	resp, err := http.Get("https://api.coinmarketcap.com/v1/ticker/?limit=250")
+	if err != nil {
+		panic(err)
+	} else {
+		defer resp.Body.Close()
+		_, err := io.Copy(os.Stdout, resp.Body)
+		if err != nil {
+				panic(err)
+		}
+	}
 	
+	// fmt.Println(resp.Body)
 	fmt.Println(curr)
 }

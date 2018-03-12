@@ -1,14 +1,19 @@
 package main
 
+// TODO: allow for input of just the Ticker symbol.
+
 import (
-	// "encoding/json";
+	"bytes";
+	"encoding/json";
 	"flag";
 	"fmt";
-	"io";
+	// "io";
 	"net/http";
 	"os";
 	"strings"
 )
+
+// TODO: create struct for JSON parsing
 
 func main() {
 	priceSource := flag.String("source", "coinmarketcap", "source of price feed")
@@ -36,17 +41,51 @@ func main() {
 		}
 	}
 
-	resp, err := http.Get("https://api.coinmarketcap.com/v1/ticker/?limit=250")
+	lowered := strings.ToLower(curr)
+	req := fmt.Sprintf("https://api.coinmarketcap.com/v1/ticker/%s", lowered)
+
+
+	resp, err := http.Get(req)
 	if err != nil {
 		panic(err)
 	} else {
 		defer resp.Body.Close()
-		_, err := io.Copy(os.Stdout, resp.Body)
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(resp.Body)
+		var f interface{}
+		err := json.Unmarshal(buf.Bytes(), &f)
+		m := f.([]interface{})
+		// fmt.Println(m)
+		r := m[0]
+		c := r.(map[string]interface{})
+		fmt.Println(c["price_btc"])
 		if err != nil {
-				panic(err)
+			panic(err)
 		}
 	}
+
+	// This gets all the currency symbols, but is not really needed.
+	//
+	// resp, err := http.Get("https://api.coinmarketcap.com/v1/ticker/?limit=250")
+	// if err != nil {
+	// 	panic(err)
+	// } else {
+	// 	defer resp.Body.Close()
+	// 	buf := new(bytes.Buffer)
+	// 	buf.ReadFrom(resp.Body)
+	// 	var f interface{}
+	// 	err := json.Unmarshal(buf.Bytes(), &f)
+	// 	m := f.([]interface{})
+	// 	var symbols []string
+	// 	for _, elem := range m {
+	// 		d := elem.(map[string]interface{})
+	// 		fmt.Println(d["symbol"]))
+	// 	}
+	// 	if err != nil {
+	// 			panic(err)
+	// 	}
+	// }
 	
 	// fmt.Println(resp.Body)
-	fmt.Println(curr)
+	// fmt.Println(curr)
 }

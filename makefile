@@ -6,4 +6,4 @@ build:
 	go build
 test:
 	make build
-	./price -source=coinmarketcap two three four
+	./price -source=coinmarketcap bitcoin three four

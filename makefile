@@ -5,4 +5,4 @@ build:
 	go build
 test:
 	make build
-	./price one two three four
+	./price -source=coinmarketcap two three four
